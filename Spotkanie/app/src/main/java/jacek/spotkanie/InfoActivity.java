@@ -55,7 +55,7 @@ public class InfoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Toast.makeText(TravelBite.this, "test", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                        Uri.parse("geo:0,0?q=" + "Wrocław" ));
+                        Uri.parse("geo:0,0?q=" + "Wrocław, mydlana" ));
                 startActivity(intent);
             }
         });

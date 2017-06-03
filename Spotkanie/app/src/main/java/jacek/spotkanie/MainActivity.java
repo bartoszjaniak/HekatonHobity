@@ -1,6 +1,7 @@
 package jacek.spotkanie;
 
         import android.content.Intent;
+        import android.os.AsyncTask;
         import android.support.design.widget.FloatingActionButton;
         import android.support.design.widget.Snackbar;
         import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ package jacek.spotkanie;
         import android.support.v4.app.FragmentPagerAdapter;
         import android.support.v4.view.ViewPager;
         import android.os.Bundle;
+        import android.util.Log;
         import android.view.LayoutInflater;
         import android.view.Menu;
         import android.view.MenuItem;
@@ -18,9 +20,19 @@ package jacek.spotkanie;
         import android.view.ViewGroup;
 
         import android.widget.AdapterView;
+        import android.widget.ArrayAdapter;
         import android.widget.ListView;
         import android.widget.TextView;
 
+
+        import org.ksoap2.SoapEnvelope;
+        import org.ksoap2.SoapFault;
+        import org.ksoap2.serialization.SoapObject;
+        import org.ksoap2.serialization.SoapSerializationEnvelope;
+        import org.ksoap2.transport.HttpTransportSE;
+        import org.xmlpull.v1.XmlPullParserException;
+
+        import java.io.IOException;
         import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,17 +45,25 @@ public class MainActivity extends AppCompatActivity {
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
+    private static final String SOAP_ACTION = "http://makemyday222.azurewebsites.net/ShowFriends";
+    private static final String METHOD_NAME = "ShowFriends";
+    private static final String NAMESPACE = "http://tempuri.org";
+    private static final String URL = "http://makemyday222.azurewebsites.net/WebSerciceMMD.asmx";
+    private String response;
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
+    public static ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        myAsyncTask myRequest = new myAsyncTask();
+        myRequest.execute();
 
 
 
@@ -56,7 +76,8 @@ public class MainActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
+        mViewPager.setCurrentItem(1);
+        mSectionsPagerAdapter.notifyDataSetChanged();
 
     }
 
@@ -86,43 +107,32 @@ public class MainActivity extends AppCompatActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
+    public static class Fragment1 extends Fragment {
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            int number=getArguments().getInt(ARG_SECTION_NUMBER);
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView;
-            if(number==0)
-                rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            if(number==1)
-                rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            else
-                rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            rootView = inflater.inflate(R.layout.fragment_znajomi, container, false);
+            final ListView listview = (ListView) rootView.findViewById(R.id.listView1);
+            final ArrayList<String> list = new ArrayList<String>();
+            list.add(new String("Tomek Niewyspaniec"));
+            list.add(new String("Jacek Fatalerror"));
 
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, list);
+            listview.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+            return rootView;
+        }
+    }
+    public static class Fragment2 extends Fragment {
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View rootView;
+            rootView = inflater.inflate(R.layout.fragment_main, container, false);
             final ListView listview = (ListView) rootView.findViewById(R.id.listView1);
             final ArrayList<EventInfo> list = new ArrayList<EventInfo>();
-            list.add(new EventInfo("Tomek","Piwko w plenerze"));
-            list.add(new EventInfo("Jacek","Androidowanko"));
+            list.add(new EventInfo("Tomek", "Piwko w plenerze"));
+            list.add(new EventInfo("Jacek", "Androidowanko"));
 
             final MyAdapter adapter = new MyAdapter(this.getContext(), list);
             listview.setAdapter(adapter);
@@ -133,19 +143,30 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
                     final EventInfo item = (EventInfo) parent.getItemAtPosition(position);
-                    Intent i = new Intent(PlaceholderFragment.this.getContext(), InfoActivity.class);
+                    Intent i = new Intent(Fragment2.this.getContext(), InfoActivity.class);
                     startActivity(i);
                 }
 
             });
+            FloatingActionButton fab=(FloatingActionButton) rootView.findViewById(R.id.floatingActionButton2);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mViewPager.setCurrentItem(2);
+                }
+            });
+            return rootView;
+        }
+    }
+    public static class Fragment3 extends Fragment {
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View rootView;
+            rootView = inflater.inflate(R.layout.fragment_wydarzenie, container, false);
             return rootView;
         }
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -154,9 +175,16 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            switch (position) {
+                case 0:
+                    return new Fragment1();
+                case 1:
+                    return new Fragment2();
+                case 2:
+                    return new Fragment3();
+                default:
+                    return new Fragment1();
+            }
         }
 
         @Override
@@ -176,6 +204,47 @@ public class MainActivity extends AppCompatActivity {
                     return "SECTION 3";
             }
             return null;
+        }
+    }
+    private class myAsyncTask extends AsyncTask<Void, Void, Void> {
+
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            //tv.setText(response);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+/*
+            try {
+                SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
+
+                //request.addProperty("prop1", "myprop");
+
+                SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+                envelope.dotNet=true;
+                envelope.setOutputSoapObject(request);
+
+                HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
+
+                androidHttpTransport.call(SOAP_ACTION, envelope);
+
+                Object result = (Object)envelope.getResponse();
+
+                String[] results = (String[])  result;
+
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }*/
+            return  null;
         }
     }
 }
