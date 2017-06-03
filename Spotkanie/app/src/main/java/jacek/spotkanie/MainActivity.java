@@ -44,26 +44,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final ListView listview = (ListView) findViewById(R.id.listView1);
-        final ArrayList<EventInfo> list = new ArrayList<EventInfo>();
-        list.add(new EventInfo("Tomek","Piwko w plenerze"));
-        list.add(new EventInfo("Jacek","Androidowanko"));
 
-        final MyAdapter adapter = new MyAdapter(this, list);
-        listview.setAdapter(adapter);
 
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-                final String item = (String) parent.getItemAtPosition(position);
-                //jakis kod do obsługi przyciśnięcia
-            }
-
-        });
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+      //  Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+       // setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -72,15 +56,6 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
     }
 
@@ -142,6 +117,25 @@ public class MainActivity extends AppCompatActivity {
                 rootView = inflater.inflate(R.layout.fragment_main, container, false);
             else
                 rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+            final ListView listview = (ListView) rootView.findViewById(R.id.listView1);
+            final ArrayList<EventInfo> list = new ArrayList<EventInfo>();
+            list.add(new EventInfo("Tomek","Piwko w plenerze"));
+            list.add(new EventInfo("Jacek","Androidowanko"));
+
+            final MyAdapter adapter = new MyAdapter(this.getContext(), list);
+            listview.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+
+            listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+                    final String item = (String) parent.getItemAtPosition(position);
+                    //jakis kod do obsługi przyciśnięcia
+                }
+
+            });
             return rootView;
         }
     }

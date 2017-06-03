@@ -30,7 +30,7 @@ public class MyAdapter extends ArrayAdapter<EventInfo> {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.list_item, parent, false);
         TextView textView = (TextView) rowView.findViewById(R.id.autor);
-        TextView textView2 = (TextView) rowView.findViewById(R.id.autor);
+        TextView textView2 = (TextView) rowView.findViewById(R.id.opis);
         //ImageView imageView = (ImageView) rowView.findViewById(R.id.opis);
         textView.setText(values.get(position).user);
         textView2.setText(values.get(position).description);
