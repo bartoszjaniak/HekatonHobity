@@ -1,22 +1,26 @@
 package jacek.spotkanie;
 
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+        import android.support.design.widget.FloatingActionButton;
+        import android.support.design.widget.Snackbar;
+        import android.support.v7.app.AppCompatActivity;
+        import android.support.v7.widget.Toolbar;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+        import android.support.v4.app.Fragment;
+        import android.support.v4.app.FragmentManager;
+        import android.support.v4.app.FragmentPagerAdapter;
+        import android.support.v4.view.ViewPager;
+        import android.os.Bundle;
+        import android.view.LayoutInflater;
+        import android.view.Menu;
+        import android.view.MenuItem;
+        import android.view.View;
+        import android.view.ViewGroup;
 
-import android.widget.TextView;
+        import android.widget.AdapterView;
+        import android.widget.ListView;
+        import android.widget.TextView;
+
+        import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,8 +44,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final ListView listview = (ListView) findViewById(R.id.listView1);
+        final ArrayList<EventInfo> list = new ArrayList<EventInfo>();
+        list.add(new EventInfo("Tomek","Piwko w plenerze"));
+        list.add(new EventInfo("Jacek","Androidowanko"));
+
+        final MyAdapter adapter = new MyAdapter(this, list);
+        listview.setAdapter(adapter);
+
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+                final String item = (String) parent.getItemAtPosition(position);
+                //jakis kod do obsługi przyciśnięcia
+            }
+
+        });
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-       // setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -94,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
-
         public PlaceholderFragment() {
         }
 
@@ -113,9 +134,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            int number=getArguments().getInt(ARG_SECTION_NUMBER);
+            View rootView;
+            if(number==0)
+                rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            if(number==1)
+                rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            else
+                rootView = inflater.inflate(R.layout.fragment_main, container, false);
             return rootView;
         }
     }

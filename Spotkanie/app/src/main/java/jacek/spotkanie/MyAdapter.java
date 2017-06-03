@@ -1,4 +1,4 @@
-package com.example.bartoszjaniak.meetchat;
+package jacek.spotkanie;
 
 import android.content.Context;
 import android.view.LayoutInflater;
