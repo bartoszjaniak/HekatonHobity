@@ -133,8 +133,8 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
                     final EventInfo item = (EventInfo) parent.getItemAtPosition(position);
-                    //Intent i = new Intent(this, InfoActivity.class);
-                    //startActivity(i);
+                    Intent i = new Intent(PlaceholderFragment.this.getContext(), InfoActivity.class);
+                    startActivity(i);
                 }
 
             });
