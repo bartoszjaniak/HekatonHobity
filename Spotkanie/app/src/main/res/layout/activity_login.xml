@@ -73,7 +73,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:layout_weight="1"
-                        android:text="Sign in"
+                        android:text="Zaloguj"
 
                         android:textStyle="bold" />
 
@@ -84,7 +84,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:layout_weight="1"
-                        android:text="Register"
+                        android:text="Rejestracja"
 
                         android:textStyle="bold" />
 
